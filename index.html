@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>my evil input</title>
+<title>name generator</title>
 
 <style>
   html, body {
@@ -24,37 +24,68 @@
     background: #23243d;
   }
 
-  .evil-box {
+  .container {
+    width: 600px;
     display: flex;
     flex-direction: column;
-    gap: 15px;
     align-items: center;
+    gap: 18px;
   }
 
   h1 {
-    font-size: 28px;
     margin: 0;
     color: #ff6b6b;
+    font-size: 30px;
   }
 
-  input {
-    width: 350px;
-    padding: 14px;
-    background: #292b47;
-    color: #eceae3;
+  .name-display {
+    width: 90%;
+    min-height: 45px;
+    padding: 10px;
     border: 2px solid #ff6b6b;
     border-radius: 8px;
+    background: #292b47;
+    color: #eceae3;
+    font-size: 24px;
+    overflow-wrap: anywhere;
+  }
+
+  .letter {
+    font-size: 36px;
+    color: #ffd166;
+    font-weight: bold;
+  }
+
+  input[type="range"] {
+    width: 400px;
+    accent-color: #ff6b6b;
+    cursor: pointer;
+  }
+
+  .buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  button {
+    padding: 10px 15px;
+    border: 2px solid #ff6b6b;
+    border-radius: 8px;
+    background: #292b47;
+    color: #eceae3;
     font: inherit;
-    font-size: 20px;
-    outline: none;
-    text-align: center;
+    cursor: pointer;
   }
 
-  input:focus {
-    border-color: #ffd166;
+  button:hover {
+    background: #ff6b6b;
+    color: #23243d;
   }
 
-  p {
+  .hint {
+    margin: 0;
     color: #aaaac0;
     font-size: 13px;
   }
@@ -63,58 +94,96 @@
 
 <body>
   <div id="stage">
-    <div class="evil-box">
-      <h1>THE EVIL INPUT</h1>
+    <div class="container">
 
-      <label for="evilInput">
-        Try to type something...
-      </label>
+      <h1>WHAT IS YOUR FULL NAME?</h1>
+
+      <div class="name-display" id="nameDisplay">
+        Your name will appear here...
+      </div>
+
+      <div>
+        <p>Selected letter:</p>
+        <div class="letter" id="letterDisplay">A</div>
+      </div>
 
       <input
-        type="text"
-        id="evilInput"
-        placeholder="Your keyboard has betrayed you"
-        autocomplete="off"
+        type="range"
+        id="letterSlider"
+        min="0"
+        max="25"
+        value="0"
       >
 
-      <p>Every letter you type becomes a random letter.</p>
+      <div class="buttons">
+        <button id="addLetter">Add letter</button>
+        <button id="addSpace">Add space</button>
+        <button id="backspace">Delete last</button>
+        <button id="clearName">Clear</button>
+      </div>
+
+      <p class="hint">
+        Use the slider to select a letter, then add it to your name.
+      </p>
+
     </div>
   </div>
 
   <script>
-    const input = document.getElementById("evilInput");
+    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-    input.addEventListener("keydown", function(event) {
+    const slider = document.getElementById("letterSlider");
+    const letterDisplay = document.getElementById("letterDisplay");
+    const nameDisplay = document.getElementById("nameDisplay");
 
-      // Let backspace, arrows, and shortcuts work normally
-      if (
-        event.key.length !== 1 ||
-        event.ctrlKey ||
-        event.altKey ||
-        event.metaKey
-      ) {
-        return;
-      }
+    const addLetterButton = document.getElementById("addLetter");
+    const addSpaceButton = document.getElementById("addSpace");
+    const backspaceButton = document.getElementById("backspace");
+    const clearButton = document.getElementById("clearName");
 
-      // Stop the actual character from appearing
-      event.preventDefault();
+    let name = "";
 
-      // Generate a random letter from A to Z
-      const letters = "abcdefghijklmnopqrstuvwxyz";
-      const randomLetter =
-        letters[Math.floor(Math.random() * letters.length)];
-
-      // Replace the selected text, or insert at the cursor
-      const start = input.selectionStart;
-      const end = input.selectionEnd;
-
-      input.setRangeText(
-        randomLetter,
-        start,
-        end,
-        "end"
-      );
+    // Update the selected letter when the slider moves
+    slider.addEventListener("input", function() {
+      const index = Number(slider.value);
+      letterDisplay.textContent = letters[index];
     });
+
+    // Add the selected letter to the name
+    addLetterButton.addEventListener("click", function() {
+      const index = Number(slider.value);
+      name += letters[index];
+      updateName();
+    });
+
+    // Add a space between first and last name
+    addSpaceButton.addEventListener("click", function() {
+      if (name.length > 0 && !name.endsWith(" ")) {
+        name += " ";
+        updateName();
+      }
+    });
+
+    // Delete the last character
+    backspaceButton.addEventListener("click", function() {
+      name = name.slice(0, -1);
+      updateName();
+    });
+
+    // Clear the entire name
+    clearButton.addEventListener("click", function() {
+      name = "";
+      updateName();
+    });
+
+    // Update the name display
+    function updateName() {
+      if (name.length === 0) {
+        nameDisplay.textContent = "Your name will appear here...";
+      } else {
+        nameDisplay.textContent = name;
+      }
+    }
   </script>
 </body>
 </html>
