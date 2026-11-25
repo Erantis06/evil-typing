@@ -4,16 +4,117 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>my evil input</title>
+
 <style>
-  /* Everything you make goes inside #stage: exactly 800 × 400 pixels. The gallery shows
-     this box (shrunk to fit), so anything outside it won't be seen. */
-  html, body { margin: 0; background: #292b47; color: #eceae3; font: 16px/1.5 ui-monospace, Menlo, Consolas, monospace; }
+  html, body {
+    margin: 0;
+    background: #292b47;
+    color: #eceae3;
+    font: 16px/1.5 ui-monospace, Menlo, Consolas, monospace;
+  }
+
   #stage {
-    width: 800px; height: 400px; overflow: hidden; position: relative;
-    display: grid; place-items: center; text-align: center;
+    width: 800px;
+    height: 400px;
+    overflow: hidden;
+    position: relative;
+    display: grid;
+    place-items: center;
+    text-align: center;
     background: #23243d;
   }
 
-  /* ---- the example below: delete it and build your own ---- */
-<label>What's your name?</label>
-<input type="text">
+  .evil-box {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+  }
+
+  h1 {
+    font-size: 28px;
+    margin: 0;
+    color: #ff6b6b;
+  }
+
+  input {
+    width: 350px;
+    padding: 14px;
+    background: #292b47;
+    color: #eceae3;
+    border: 2px solid #ff6b6b;
+    border-radius: 8px;
+    font: inherit;
+    font-size: 20px;
+    outline: none;
+    text-align: center;
+  }
+
+  input:focus {
+    border-color: #ffd166;
+  }
+
+  p {
+    color: #aaaac0;
+    font-size: 13px;
+  }
+</style>
+</head>
+
+<body>
+  <div id="stage">
+    <div class="evil-box">
+      <h1>THE EVIL INPUT</h1>
+
+      <label for="evilInput">
+        Try to type something...
+      </label>
+
+      <input
+        type="text"
+        id="evilInput"
+        placeholder="Your keyboard has betrayed you"
+        autocomplete="off"
+      >
+
+      <p>Every letter you type becomes a random letter.</p>
+    </div>
+  </div>
+
+  <script>
+    const input = document.getElementById("evilInput");
+
+    input.addEventListener("keydown", function(event) {
+
+      // Let backspace, arrows, and shortcuts work normally
+      if (
+        event.key.length !== 1 ||
+        event.ctrlKey ||
+        event.altKey ||
+        event.metaKey
+      ) {
+        return;
+      }
+
+      // Stop the actual character from appearing
+      event.preventDefault();
+
+      // Generate a random letter from A to Z
+      const letters = "abcdefghijklmnopqrstuvwxyz";
+      const randomLetter =
+        letters[Math.floor(Math.random() * letters.length)];
+
+      // Replace the selected text, or insert at the cursor
+      const start = input.selectionStart;
+      const end = input.selectionEnd;
+
+      input.setRangeText(
+        randomLetter,
+        start,
+        end,
+        "end"
+      );
+    });
+  </script>
+</body>
+</html>
