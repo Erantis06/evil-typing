@@ -118,7 +118,6 @@
       <div class="buttons">
         <button id="addLetter">Add letter</button>
         <button id="addSpace">Add space</button>
-        <button id="backspace">Delete last</button>
         <button id="clearName">Clear</button>
       </div>
 
@@ -130,7 +129,7 @@
   </div>
 
   <script>
-    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
     const slider = document.getElementById("letterSlider");
     const letterDisplay = document.getElementById("letterDisplay");
@@ -138,43 +137,36 @@
 
     const addLetterButton = document.getElementById("addLetter");
     const addSpaceButton = document.getElementById("addSpace");
-    const backspaceButton = document.getElementById("backspace");
     const clearButton = document.getElementById("clearName");
 
     let name = "";
+    let letters = [];
 
-    // Update the selected letter when the slider moves
-    slider.addEventListener("input", function() {
+    // Shuffle the letters into a random order
+    function shuffleLetters() {
+      letters = alphabet.split("");
+
+      for (let i = letters.length - 1; i > 0; i--) {
+        const randomIndex = Math.floor(Math.random() * (i + 1));
+
+        const temp = letters[i];
+        letters[i] = letters[randomIndex];
+        letters[randomIndex] = temp;
+      }
+    }
+
+    // Display the currently selected letter
+    function updateLetter() {
       const index = Number(slider.value);
       letterDisplay.textContent = letters[index];
-    });
+    }
 
-    // Add the selected letter to the name
-    addLetterButton.addEventListener("click", function() {
-      const index = Number(slider.value);
-      name += letters[index];
-      updateName();
-    });
-
-    // Add a space between first and last name
-    addSpaceButton.addEventListener("click", function() {
-      if (name.length > 0 && !name.endsWith(" ")) {
-        name += " ";
-        updateName();
-      }
-    });
-
-    // Delete the last character
-    backspaceButton.addEventListener("click", function() {
-      name = name.slice(0, -1);
-      updateName();
-    });
-
-    // Clear the entire name
-    clearButton.addEventListener("click", function() {
-      name = "";
-      updateName();
-    });
+    // Shuffle the slider and reset it to the beginning
+    function resetSlider() {
+      shuffleLetters();
+      slider.value = 0;
+      updateLetter();
+    }
 
     // Update the name display
     function updateName() {
@@ -184,6 +176,39 @@
         nameDisplay.textContent = name;
       }
     }
+
+    // Shuffle letters when the page first loads
+    resetSlider();
+
+    // Update the selected letter when the slider moves
+    slider.addEventListener("input", function() {
+      updateLetter();
+    });
+
+    // Add the selected letter and shuffle again
+    addLetterButton.addEventListener("click", function() {
+      const index = Number(slider.value);
+
+      name += letters[index];
+      updateName();
+
+      resetSlider();
+    });
+
+    // Add a space between names
+    addSpaceButton.addEventListener("click", function() {
+      if (name.length > 0 && !name.endsWith(" ")) {
+        name += " ";
+        updateName();
+      }
+    });
+
+    // Clear the entire name
+    clearButton.addEventListener("click", function() {
+      name = "";
+      updateName();
+      resetSlider();
+    });
   </script>
 </body>
 </html>
