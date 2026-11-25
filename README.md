@@ -1,14 +1,14 @@
-# <your project's name>
+# Evil enter your name
 
-<!-- This README is the front door of your project: the gallery shows its first lines. -->
+You just have to enter your full name.
 
 ## what it is
 
-<one or two sentences: what is your evil input?>
+You have to pick the letters with a slider. It's not sorted alphabetically and it changes after evey input.
 
 ## what input it collects
 
-<text? a volume? a phone number? brightness? a time? and how does it make that miserable?>
+A text, your name.
 
 ## screenshot
 
